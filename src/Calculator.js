@@ -1,5 +1,5 @@
 import { useReducer, useState } from 'react';
-import './calculator.css';
+import './calculator.scss';
 
 const GET_RESULT = 1
 
@@ -20,7 +20,7 @@ const resultRules = (result, button) => {
   result = result.toString()
 
   // Clear
-  if ( button == 'C' ) {
+  if ( button === 'C' ) {
     result = ''
   }
 
@@ -29,7 +29,7 @@ const resultRules = (result, button) => {
   let parse = ''
   for (let i = 0; i < slice.length; i++) {
     const cur = slice[i]
-    const prev = i != 0 ? slice[i-1] : ''
+    const prev = i !== 0 ? slice[i-1] : ''
 
     parse += cur
 
