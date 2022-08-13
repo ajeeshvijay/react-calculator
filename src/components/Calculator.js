@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 import './calculator.scss';
 
 const GET_RESULT = 1
