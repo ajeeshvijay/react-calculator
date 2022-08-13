@@ -59,6 +59,7 @@ const resultRules = (result, button) => {
 
   }
 
+  parse = parse.toString()
   console.log(parse);
 
   return parse;
