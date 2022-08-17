@@ -1,6 +1,10 @@
 :root {
-	--background-color: hsl(250deg 75% 5%);
+	--clr-background: hsl(221deg 45% 15%);
+	--clr-buttons-bg: hsl(221deg 30% 20%);
+	--clr-white: hsl(0deg 0% 100%);
+	--border-radius: 22px;
 }
+
 * {
 	box-sizing: border-box;
 }
@@ -16,7 +20,7 @@ body {
 
 body,
 button {
-	font-family: monospace;
+	font-family: 'Nunito';
 }
 
 #root {
@@ -26,31 +30,76 @@ button {
 	align-content: center;
 	margin: auto;
 	flex-flow: wrap;
-	background: var(--background-color);
+	background: var(--clr-background);
 }
 
 .calculator {
-	max-width: 15em;
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: column;
+	--calculator-width: 25em;
+	width: var(--calculator-width);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+	border-radius: var(--border-radius);
+	background-color: hsl(0 0% 100% / 10%);
+	box-shadow: 0 10px 20px hsl(0 0% 0% / 10%);
 
-	.result {
-		color: hsl(0deg 0% 100%);
-		background: hsl(0deg 0% 100% / 10%);
+	.results {
+		color: var(--clr-white);
 		text-align: right;
-		padding: 0.6em;
-		font-size: 1.6em;
+		padding: 0.8em 0.8em 0.4em 0.8em;
+		font-size: 2.5em;
+
+		.history, 
+		.result{
+			display: flex;
+			word-break: break-word;
+			align-items: flex-end;
+			justify-content: flex-end;
+		}
+
+		.history {
+			font-size: 0.45em;
+		}
+
+		.result {
+			font-weight: bold;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
+
 	.buttons {
-		display: flex;
-		flex-wrap: wrap;
+		width: var(--calculator-width);
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		background-color: var(--clr-buttons-bg);
+		padding: 1.5em;
+		grid-gap: 1em;
+		border-radius: var(--border-radius);
 
 		button {
-			padding: 0.6em;
-			width: 25%;
-			font-size: 1.6em;
-			border: 1px solid var(--background-color);
+			--elevate: 4px;
+			--elevate-half: calc( var(--elevate) / 2 );
+			padding: 0.8em 0.8em;
+			font-size: 1.5em;
+			background-color: hsla(0deg, 0%, 100%, 0.03);
+			color: var(--clr-white);
+			border: 0;
+			border-radius: var(--border-radius);
+			cursor: pointer;
+			box-shadow: 0 var(--elevate) hsla(0 0% 0% / 8%), 
+				0 var(--elevate-half) hsl(0deg 0% 100% / 5%) inset, 
+				0 calc( var(--elevate) * -5 ) 10px hsl(0deg 0% 0% / 5%) inset;
+			text-shadow: 0 2px hsl(0deg 0% 0% / 10%);
+			position: relative;
+
+			&:active {
+				top: var(--elevate-half);
+				// box-shadow: 0 0 transparent;
+				box-shadow: 0 0 transparent, 
+					0 var(--elevate) hsl(0deg 0% 0% / 20%) inset, 
+					0 calc( var(--elevate) * -5 ) 10px hsl(0deg 0% 0% / 5%) inset;
+			}
 		}
 	}
 	

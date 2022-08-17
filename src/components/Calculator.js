@@ -1,10 +1,10 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import './calculator.scss';
 
 const GET_RESULT = 1
 
 const buttons = [
-  'C', '%', '<', '/',
+  'C', '<', '%', '/',
   7, 8, 9, '*',
   4, 5, 6, '-',
   1, 2, 3, '+',
@@ -24,9 +24,20 @@ const resultRules = (result, button) => {
     result = ''
   }
 
+  // Backspace
+  if ( button === '<' && result ) {
+    result = result.slice(0, -2)
+  }
+
+  // 00
+  if ( button === '00' && result.length === 2 ) {
+    result = '0'
+  }
+
   // Parsing
   const slice = result.split('')
   let parse = ''
+  let group = []
   for (let i = 0; i < slice.length; i++) {
     const cur = slice[i]
     const prev = i !== 0 ? slice[i-1] : ''
@@ -34,18 +45,18 @@ const resultRules = (result, button) => {
     parse += cur
 
     if (mathematicalSigns.includes(cur) && mathematicalSigns.includes(prev)) {
-      parse = parse.slice(0,-2) + cur
+      parse = parse.slice(0, -2) + cur
     }
 
     if ( prev === '.' && mathematicalSigns.includes(cur)) {
-      parse = parse.slice(0,-2) + cur
+      parse = parse.slice(0, -2) + cur
     }
 
     if ( cur === '.' && prev === '.' ) {
-      parse = parse.slice(0,-1)
+      parse = parse.slice(0, -1)
     }
 
-    if ( cur === '0' && prev === '0'  ) {
+    if ( slice[0] === '0' && slice[1] === '0'  ) {
       parse = 0
     }
     
@@ -67,12 +78,14 @@ const resultRules = (result, button) => {
 }
 
 const reducer = (state, action) => {
-  state = resultRules(state, action.button);
+  state = resultRules(state.result, action.button)
+  let history = ''
   if (action.type === GET_RESULT) {
     
     // Create Result
     if (action.button === '=') {
       try {
+        history = state
         state = eval(state)
       } catch (error) {
         console.warn('Will fix this bug in next release :)');
@@ -80,12 +93,15 @@ const reducer = (state, action) => {
       }
     }
   }
-  return state;
+  return {
+    result: state,
+    history: history
+  };
 };
 
 function Calculator() {
 
-  const [result, dispatch] = useReducer(reducer, '');
+  const [result, dispatch] = useReducer(reducer, '')
 
   const buttonClick = (button) => {
     dispatch({ type: GET_RESULT, button: button })
@@ -93,7 +109,10 @@ function Calculator() {
   
   return (
     <div className="calculator">
-      <div className="result">{ result || <>&nbsp;</> }</div>
+      <div className="results">
+        <div className="history">{ result.history || <>&nbsp;</> }</div>
+        <div className="result">{ result.result || <>&nbsp;</> }</div>
+      </div>
       <div className="buttons">
         { buttons.map( (button, i) => <button 
           key={`calculator.button.index.${i}`}
