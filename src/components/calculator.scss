@@ -92,6 +92,7 @@ button {
 				0 calc( var(--elevate) * -5 ) 10px hsl(0deg 0% 0% / 5%) inset;
 			text-shadow: 0 2px hsl(0deg 0% 0% / 10%);
 			position: relative;
+			user-select: none;
 
 			&:active {
 				top: var(--elevate-half);

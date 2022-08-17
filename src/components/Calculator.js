@@ -4,14 +4,14 @@ import './calculator.scss';
 const GET_RESULT = 1
 
 const buttons = [
-  'C', '<', '%', '/',
-  7, 8, 9, '*',
-  4, 5, 6, '-',
+  'C', '⌫', '%', '÷',
+  7, 8, 9, '×',
+  4, 5, 6, '−',
   1, 2, 3, '+',
   '00', 0, '.', '='
 ];
 
-const mathematicalSigns = ['/', '*', '-', '+'];
+const mathematicalSigns = ['÷', '×', '−', '+'];
 const restrictSiblingSigns = [...mathematicalSigns, '%', '.'];
 
 
@@ -25,7 +25,7 @@ const resultRules = (result, button) => {
   }
 
   // Backspace
-  if ( button === '<' && result ) {
+  if ( button === '⌫' && result ) {
     result = result.slice(0, -2)
   }
 
@@ -77,6 +77,13 @@ const resultRules = (result, button) => {
 
 }
 
+const replaceToCalc = (str) => {
+  str = str.replace('÷', '/')
+  str = str.replace('×', '*')
+  str = str.replace('−', '-')
+  return str
+}
+
 const reducer = (state, action) => {
   state = resultRules(state.result, action.button)
   let history = ''
@@ -86,7 +93,7 @@ const reducer = (state, action) => {
     if (action.button === '=') {
       try {
         history = state
-        state = eval(state)
+        state = eval(replaceToCalc(state))
       } catch (error) {
         console.warn('Will fix this bug in next release :)');
         state = ''
