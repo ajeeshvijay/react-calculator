@@ -30,8 +30,18 @@ const resultRules = (result, button) => {
   }
 
   // 00
-  if ( button === '00' && result.length === 2 ) {
+  if ( ( button === '0' || button === '00' ) && result.length === 2 ) {
     result = '0'
+  }
+
+  // Remove leading zero of number
+  if ( button !== 0 && Number.isInteger(button) && result[0] == '0' ) {
+    result = result.slice(1)
+  }
+
+  // Remove first signs
+  if ( mathematicalSigns.includes(button) && result.length === 1 ) {
+    result = result.slice(0, -1)
   }
 
   // Parsing
@@ -55,10 +65,6 @@ const resultRules = (result, button) => {
     if ( cur === '.' && prev === '.' ) {
       parse = parse.slice(0, -1)
     }
-
-    if ( slice[0] === '0' && slice[1] === '0'  ) {
-      parse = 0
-    }
     
     if ( cur === '=') {
       parse = parse.slice(0, -1)
@@ -71,7 +77,7 @@ const resultRules = (result, button) => {
   }
 
   parse = parse.toString()
-  console.log(parse);
+  // console.log(parse);
 
   return parse;
 
@@ -90,12 +96,13 @@ const reducer = (state, action) => {
   if (action.type === GET_RESULT) {
     
     // Create Result
-    if (action.button === '=') {
+    if (action.button === '=' && state) {
       try {
         history = state
-        state = eval(replaceToCalc(state))
+        state = eval(replaceToCalc(state)).toString()
       } catch (error) {
-        console.warn('Will fix this bug in next release :)');
+        console.warn('Will fix this bug in next release :)')
+        history = ''
         state = ''
       }
     }
@@ -108,7 +115,7 @@ const reducer = (state, action) => {
 
 function Calculator() {
 
-  const [result, dispatch] = useReducer(reducer, '')
+  const [result, dispatch] = useReducer(reducer, { result: ''})
 
   const buttonClick = (button) => {
     dispatch({ type: GET_RESULT, button: button })
@@ -118,7 +125,7 @@ function Calculator() {
     <div className="calculator">
       <div className="results">
         <div className="history">{ result.history || <>&nbsp;</> }</div>
-        <div className="result">{ result.result || <>&nbsp;</> }</div>
+        <div className="result">{ result.result.length ? result.result : <>&nbsp;</> }</div>
       </div>
       <div className="buttons">
         { buttons.map( (button, i) => <button 
