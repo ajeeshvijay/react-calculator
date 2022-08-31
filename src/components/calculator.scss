@@ -38,7 +38,7 @@ button {
 
 .calculator {
 	--calculator-width: 25em;
-	width: var(--calculator-width);
+	width: min(100%, var(--calculator-width));
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -89,7 +89,7 @@ button {
 	}
 
 	&__buttons {
-		width: var(--calculator-width);
+		width: min(100%, var(--calculator-width));
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
 		background-color: var(--clr-buttons-bg);
