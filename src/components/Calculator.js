@@ -1,10 +1,12 @@
 import { useReducer, useState } from 'react';
 import './calculator.scss';
 
-const GET_RESULT = 1
+const ACTION = {
+  CALCULATE: 1
+}
 
 const buttons = [
-  'C', '⌫', '%', '÷',
+  'AC','C', '⌫', /*'%',*/ '÷',
   7, 8, 9, '×',
   4, 5, 6, '−',
   1, 2, 3, '+',
@@ -15,12 +17,12 @@ const mathematicalSigns = ['÷', '×', '−', '+'];
 const restrictSiblingSigns = [...mathematicalSigns, '%', '.'];
 
 
-const resultRules = (result, button) => {
+const applyRules = (result, button) => {
   result += button 
   result = result.toString()
 
   // Clear
-  if ( button === 'C' ) {
+  if ( button === 'AC' || button === 'C' ) {
     result = ''
   }
 
@@ -84,50 +86,80 @@ const resultRules = (result, button) => {
 }
 
 const replaceToCalc = (str) => {
-  str = str.replace('÷', '/')
-  str = str.replace('×', '*')
-  str = str.replace('−', '-')
+  str = str.replace(/÷/g, '/')
+  str = str.replace(/×/g, '*')
+  str = str.replace(/−/g, '-')
   return str
 }
 
 const reducer = (state, action) => {
-  state = resultRules(state.result, action.button)
-  let history = ''
-  if (action.type === GET_RESULT) {
+
+  if (action.type === ACTION.CALCULATE) {
+
+    let rulesApplied = applyRules(state.result, action.button)
+    state = {
+      historyAll: state.historyAll ? state.historyAll : []
+    }
+    state.result = rulesApplied
+
+    try {
+      let mm = replaceToCalc(state.result)
+      state.tempResult = eval(mm).toString()
+      state.error = false
+    } catch (error) {
+      state.error = true
+      state.tempResult = state.result
+    }
     
     // Create Result
-    if (action.button === '=' && state) {
-      try {
-        history = state
-        state = eval(replaceToCalc(state)).toString()
-      } catch (error) {
-        console.warn('Will fix this bug in next release :)')
-        history = ''
-        state = ''
+    if (action.button === '=' && state.result) {
+
+      if (!state.error) {
+        
+        state.history = state.result
+        state.result = state.tempResult
+        state.tempResult = ''
+
+        // console.log(state.historyAll);
+
+        const store = {
+          problem: state.history,
+          result: state.result,
+        }
+
+        if (store.problem !== store.result && !state.historyAll.some(h => h.problem === store.problem) ) {
+          state.historyAll.push(store)
+        }
+
       }
     }
   }
-  return {
-    result: state,
-    history: history
-  };
+
+  if (state.tempResult === state.result ) {
+    state.tempResult = ''
+  }
+
+  return state;
 };
 
 function Calculator() {
 
-  const [result, dispatch] = useReducer(reducer, { result: ''})
+  const [result, dispatch] = useReducer(reducer, { result: '', history: '', tempResult: ''})
 
   const buttonClick = (button) => {
-    dispatch({ type: GET_RESULT, button: button })
+    dispatch({ type: ACTION.CALCULATE, button: button })
   }
   
   return (
     <div className="calculator">
-      <div className="results">
-        <div className="history">{ result.history || <>&nbsp;</> }</div>
-        <div className="result">{ result.result.length ? result.result : <>&nbsp;</> }</div>
+      <div className="calculator__results">
+        <div className="calculator__history">{ result.history || <>&nbsp;</> }</div>
+        <div className="calculator__result">
+          { result.tempResult ? <span className="calculator__tempResult">{ result.tempResult }</span> : '' }
+          { result.result || <>&nbsp;</> }
+        </div>
       </div>
-      <div className="buttons">
+      <div className="calculator__buttons">
         { buttons.map( (button, i) => <button 
           key={`calculator.button.index.${i}`}
           onClick={ () => buttonClick(button) }>{button}</button>) }

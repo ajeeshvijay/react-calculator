@@ -2,7 +2,7 @@
 	--clr-background: hsl(221deg 45% 15%);
 	--clr-buttons-bg: hsl(221deg 30% 20%);
 	--clr-white: hsl(0deg 0% 100%);
-	--clr-primary: hsl(231, 48%, 48%);
+	--clr-primary: hsl(230, 70%, 50%);
 	--border-radius: 22px;
 }
 
@@ -42,34 +42,51 @@ button {
     flex-direction: column;
 	border-radius: var(--border-radius);
 	background-color: hsl(0 0% 100% / 10%);
-	box-shadow: 0 10px 20px hsl(0 0% 0% / 10%);
+	box-shadow: 0 5px hsla(0deg, 0%, 0%, .1), 0 20px 30px hsl(0 0% 0% / 25%), 0 20px 100px hsl(0 0% 0% / 10%);
 
-	.results {
+	&__results {
 		color: var(--clr-white);
-		text-align: right;
-		padding: 0.8em 0.8em 0.4em 0.8em;
+		padding: 0.4em;
+		padding-bottom: 0.2em;
 		font-size: 2.5em;
+		background: hsl(230deg 70% 48% / 8%);
+		margin: 0.6em;
+		border-radius: 10px;
+		box-shadow: 0 5px 0px hsl(0deg 0% 0% / 15%) inset,
+			0 10px 30px hsl(0deg 0% 0% / 20%) inset,
+			0 -1px hsla(0, 0%, 100%, 0.05) inset
+	}
 
-		.history, 
-		.result{
-			display: flex;
-			word-break: break-word;
-			align-items: flex-end;
-			justify-content: flex-end;
-		}
+	&__history, 
+	&__result{
+		display: flex;
+		word-break: break-word;
+		align-items: center;
+		justify-content: flex-end;
+	}
 
-		.history {
-			font-size: 0.45em;
-		}
+	&__history {
+		font-size: 0.45em;
+		color: #808bc6;
+	}
 
-		.result {
-			font-weight: bold;
-			overflow: hidden;
-			text-overflow: ellipsis;
+	&__result {
+		font-weight: bold;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__tempResult {
+		opacity: 0.5;
+		font-weight: 100;
+		font-size: .6em;
+
+		&:after {
+			content: '\0a0=\0a0';
 		}
 	}
 
-	.buttons {
+	&__buttons {
 		width: var(--calculator-width);
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
